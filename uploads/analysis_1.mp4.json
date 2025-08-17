@@ -1,7 +1,7 @@
 {
   "video_filename": "1.mp4",
   "analysis_result": {
-    "timestamp": "2025-08-17T20:26:20.995267",
+    "timestamp": "2025-08-17T22:16:28.007511",
     "video_filename": "1.mp4",
     "summary": {
       "total_visitors": 25,
@@ -31040,7 +31040,7 @@
       ]
     },
     "heatmap": {
-      "image_path": "/static/images/heatmap_dwell_time_100c8789.png",
+      "image_path": "/static/images/heatmap_dwell_time_1b9f6b18.png",
       "hot_spots": [
         {
           "rank": 1,
@@ -31064,13 +31064,13 @@
       "description": "Тепловая карта основана на реальных данных из видео"
     },
     "desire_paths": {
-      "image_path": "/static/images/paths_100c8789.png",
+      "image_path": "/static/images/paths_1b9f6b18.png",
       "total_paths": 25,
       "avg_path_duration": 7.2,
       "description": "Реальные тропы движения людей из загруженного видео"
     },
     "queue_analysis": {
-      "image_path": "/static/images/queue_100c8789.png",
+      "image_path": "/static/images/queue_1b9f6b18.png",
       "max_concurrent": 19,
       "avg_concurrent": 13.9,
       "description": "График загруженности основан на подсчете людей в каждом кадре"
@@ -31081,5 +31081,5 @@
       "description": "Детекция аномалий будет добавлена в следующей версии"
     }
   },
-  "timestamp": "2025-08-17T20:26:21.029273"
+  "timestamp": "2025-08-17T22:16:28.024517"
 }
