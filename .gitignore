@@ -138,14 +138,11 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-uploads/
-*.mp4
 *.avi
 *.mov
 *.db
 *.pt
 images/
-static/images/
 static/trajectory_gifs/
 
 # Keep only essential model files
