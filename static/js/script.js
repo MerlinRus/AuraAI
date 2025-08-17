@@ -1,5 +1,16 @@
 // Главный скрипт для Aura
 
+// Функция для принудительного обновления CSS
+function forceReloadCSS() {
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    links.forEach(link => {
+        if (link.href.includes('style.css')) {
+            const newHref = link.href.split('?')[0] + '?v=' + Date.now();
+            link.href = newHref;
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Функция задержки
     function sleep(ms) {
