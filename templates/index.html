@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura - AI-аналитик физических пространств</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/style.css?v=1.1" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Хедер -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-eye"></i>
+                <h1>Aura</h1>
+                <span class="tagline">AI-аналитик физических пространств</span>
+            </div>
+        </header>
+
+        <!-- Главная секция -->
+        <main class="main-content">
+            <section class="hero">
+                <h2>Превратите обычную камеру в мощный инструмент бизнес-аналитики</h2>
+                <p class="hero-description">
+                    Загрузите видео из вашего заведения и получите глубокую аналитику поведения клиентов:
+                    тепловые карты, тропы желаний, анализ очередей и детекцию аномалий.
+                </p>
+            </section>
+
+            <!-- Преимущества -->
+            <section class="features">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-fire"></i>
+                        <h3>Тепловые карты</h3>
+                        <p>Узнайте, где ваши клиенты проводят больше всего времени</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-route"></i>
+                        <h3>Тропы желаний</h3>
+                        <p>Визуализация популярных маршрутов движения посетителей</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Анализ очередей</h3>
+                        <p>Отслеживание времени ожидания и загруженности</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Детекция аномалий</h3>
+                        <p>Автоматическое выявление необычных паттернов поведения</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Форма загрузки -->
+            <section class="upload-section">
+                <div class="upload-container">
+                    <h3>Загрузите видео для анализа</h3>
+                    <p>Поддерживаются форматы: MP4, AVI, MOV. Максимальный размер: 500MB</p>
+                    
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Перетащите видео сюда или <span class="browse-link">выберите файл</span></p>
+                            <input type="file" id="videoFile" name="file" accept="video/*" hidden>
+                        </div>
+                        
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <p class="progress-text" id="progressText">Загрузка...</p>
+                        </div>
+                        
+                        <button type="submit" class="upload-btn" id="uploadBtn" disabled>
+                            <i class="fas fa-magic"></i>
+                            Анализировать видео
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Результаты -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h3>Результаты анализа</h3>
+                <div id="resultsContainer"></div>
+                
+                <!-- Кнопка для системы оценки -->
+                <div class="rating-section" id="ratingSection" style="display: none;">
+                    <h4>🎯 Оцените качество траекторий</h4>
+                    <p>Помогите системе научиться правильно определять пути движения людей</p>
+                    <button id="startRatingBtn" class="btn btn-primary">
+                        <i class="fas fa-star"></i>
+                        Начать оценку траекторий
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <p>&copy; 2024 Aura Analytics. Революция в понимании клиентского поведения.</p>
+        </footer>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="/static/js/script.js?v=1.1"></script>
+</body>
+</html>
