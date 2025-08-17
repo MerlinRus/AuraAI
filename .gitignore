@@ -150,3 +150,7 @@ static/trajectory_gifs/
 
 # Keep only essential model files
 !yolov8n.pt
+
+# Documentation and instructions (local use only)
+GIT_INSTRUCTIONS.md
+*.md
