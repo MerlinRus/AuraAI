@@ -1,15 +1,28 @@
 // Главный скрипт для Aura
 
-// Функция для принудительного обновления CSS
-function forceReloadCSS() {
-    const links = document.querySelectorAll('link[rel="stylesheet"]');
-    links.forEach(link => {
-        if (link.href.includes('style.css')) {
-            const newHref = link.href.split('?')[0] + '?v=' + Date.now();
-            link.href = newHref;
-        }
-    });
-}
+    // Функция для принудительного обновления CSS
+    function forceReloadCSS() {
+        const links = document.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(link => {
+            if (link.href.includes('style.css')) {
+                const newHref = link.href.split('?')[0] + '?v=' + Date.now();
+                link.href = newHref;
+            }
+        });
+    }
+    
+    // Функции для модального окна
+    function openImageModal(imageSrc, imageAlt) {
+        modalImage.src = imageSrc;
+        modalImage.alt = imageAlt;
+        imageModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Запрещаем прокрутку
+    }
+    
+    function closeImageModal() {
+        imageModal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Возвращаем прокрутку
+    }
 
 document.addEventListener('DOMContentLoaded', function() {
     // Функция задержки
@@ -27,10 +40,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressText = document.getElementById('progressText');
     const resultsSection = document.getElementById('resultsSection');
     const resultsContainer = document.getElementById('resultsContainer');
+    
+    // Элементы модального окна
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalClose = document.getElementById('modalClose');
 
     // Обработка drag & drop
     fileUploadArea.addEventListener('click', () => {
         videoFileInput.click();
+    });
+    
+    // Обработчики модального окна
+    modalClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeImageModal();
+    });
+    
+    imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) {
+            closeImageModal();
+        }
+    });
+    
+    // Закрытие по Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && imageModal.style.display === 'flex') {
+            closeImageModal();
+        }
     });
     
     // Инициализация прогресса
@@ -304,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h4><i class="fas fa-fire"></i> Тепловая карта популярности</h4>
                     ${heatmap.image_path ? 
                         `<div class="image-container">
-                            <img src="${heatmap.image_path}" alt="Тепловая карта" class="result-image impressive-image">
+                            <img src="${heatmap.image_path}" alt="Тепловая карта" class="result-image impressive-image" onclick="openImageModal('${heatmap.image_path}', 'Тепловая карта')">
                             <div class="image-overlay">
                                 <span class="overlay-text">Наглядная карта активности</span>
                             </div>
@@ -328,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h4><i class="fas fa-route"></i> Тропы желаний посетителей</h4>
                     ${desirePaths.image_path ? 
                         `<div class="image-container">
-                            <img src="${desirePaths.image_path}" alt="Тропы желаний" class="result-image impressive-image">
+                            <img src="${desirePaths.image_path}" alt="Тропы желаний" class="result-image impressive-image" onclick="openImageModal('${desirePaths.image_path}', 'Тропы желаний')">
                             <div class="image-overlay">
                                 <span class="overlay-text">Реальные маршруты движения</span>
                             </div>
@@ -346,28 +383,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="result-card">
                     <h4><i class="fas fa-users-line"></i> Анализ загруженности</h4>
                     ${queueAnalysis.image_path ? 
-                        `<img src="${queueAnalysis.image_path}" alt="Анализ очередей" class="result-image">` :
+                        `<img src="${queueAnalysis.image_path}" alt="Анализ очередей" class="result-image" onclick="openImageModal('${queueAnalysis.image_path}', 'Анализ очередей')">` :
                         '<p class="no-data">Данные не доступны</p>'
                     }
                     <p><strong>Максимальная загруженность:</strong> ${queueAnalysis.max_concurrent || 0} человек</p>
                     <p><strong>Средняя загруженность:</strong> ${queueAnalysis.avg_concurrent || 0} человек</p>
                 </div>
 
-                <!-- Аномалии -->
-                <div class="result-card">
-                    <h4><i class="fas fa-exclamation-triangle"></i> Обнаруженные аномалии</h4>
-                    ${anomalies.anomalies && anomalies.anomalies.length > 0 ?
-                        `<div class="anomalies-list">
-                            ${anomalies.anomalies.slice(0, 3).map(anomaly => 
-                                `<div class="anomaly-item severity-${anomaly.severity}">
-                                    <strong>${getAnomalyTypeLabel(anomaly.type)}</strong>
-                                    <p>${anomaly.description}</p>
-                                </div>`
-                            ).join('')}
-                        </div>` :
-                        '<p class="no-data">Аномалий не обнаружено</p>'
-                    }
-                </div>
+
 
                 <!-- Рекомендации -->
                 <div class="result-card full-width">
@@ -402,14 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    function getAnomalyTypeLabel(type) {
-        const labels = {
-            'stationary_person': 'Блокировка прохода',
-            'crowd_surge': 'Скопление людей',
-            'long_visit': 'Долгое посещение'
-        };
-        return labels[type] || type;
-    }
+
 
     function resetUploadForm() {
         uploadProgress.style.display = 'none';
