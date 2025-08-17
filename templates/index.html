@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AuraAI - AI-аналитик физических пространств</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="/static/css/style.css?v=2.5" rel="stylesheet">
+    <link href="/static/css/style.css?v=2.7" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -56,10 +56,72 @@
                     </div>
                 </div>
 
+                <!-- Предустановленные видео для тестирования -->
+                <div class="demo-videos-section">
+                    <h3>🎬 Попробуйте на тестовых видео</h3>
+                    <p>Выберите одно из предустановленных видео для быстрого тестирования или загрузите своё</p>
+                    
+                    <div class="demo-videos-grid">
+                        <div class="demo-video-card" data-video="videos/просто идущие.mp4">
+                            <div class="video-preview">
+                                <img src="/static/images/просто идущие.png" alt="Пешеходная улица Сочи" class="preview-image">
+                                <div class="play-overlay">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <span class="video-duration">17 сек</span>
+                            </div>
+                            <div class="video-info">
+                                <h4>Пешеходная улица Сочи</h4>
+                                <p>Люди спокойно идут пешком</p>
+                                <button class="select-video-btn" onclick="selectDemoVideo('videos/просто идущие.mp4', 'Пешеходная улица Сочи')">
+                                    <i class="fas fa-magic"></i>
+                                    Выбрать это видео
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="demo-video-card" data-video="videos/1.mp4">
+                            <div class="video-preview">
+                                <img src="/static/images/1.png" alt="Подъём на гору" class="preview-image">
+                                <div class="play-overlay">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <span class="video-duration">10 сек</span>
+                            </div>
+                            <div class="video-info">
+                                <h4>Подъём на гору</h4>
+                                <p>Люди поднимаются к смотровой вышке</p>
+                                <button class="select-video-btn" onclick="selectDemoVideo('videos/1.mp4', 'Подъём на гору')">
+                                    <i class="fas fa-magic"></i>
+                                    Выбрать это видео
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="demo-video-card" data-video="videos/прошла остановилась.mp4">
+                            <div class="video-preview">
+                                <img src="/static/images/прошла остановилась.png" alt="Прилавки в горах Сочи" class="preview-image">
+                                <div class="play-overlay">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <span class="video-duration">8 сек</span>
+                            </div>
+                            <div class="video-info">
+                                <h4>Прилавки в горах Сочи</h4>
+                                <p>Люди проходят вдоль прилавков</p>
+                                <button class="select-video-btn" onclick="selectDemoVideo('videos/прошла остановилась.mp4', 'Прилавки в горах Сочи')">
+                                    <i class="fas fa-magic"></i>
+                                    Выбрать это видео
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Форма загрузки -->
                 <div class="upload-section">
                     <div class="upload-container">
-                        <h3>Загрузите видео для анализа</h3>
+                        <h3>Загрузите своё видео для анализа</h3>
                         <p>Поддерживаются форматы: MP4, AVI, MOV. Максимальный размер: 500MB</p>
                         
                         <form id="uploadForm" enctype="multipart/form-data">
@@ -111,6 +173,6 @@
     </div>
 
     <!-- Скрипты -->
-    <script src="/static/js/script.js?v=1.3"></script>
+    <script src="/static/js/script.js?v=2.0"></script>
 </body>
 </html>

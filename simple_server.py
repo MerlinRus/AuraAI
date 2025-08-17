@@ -407,6 +407,60 @@ async def get_learning_recommendations():
             "message": f"Ошибка: {str(e)}"
         }, status_code=500)
 
+@app.post("/analyze-demo-video")
+async def analyze_demo_video(request: Request):
+    """API для анализа демо-видео"""
+    try:
+        # Получаем данные из запроса
+        data = await request.json()
+        video_path = data.get('video_path')
+        video_name = data.get('video_name')
+        
+        if not video_path or not os.path.exists(video_path):
+            return JSONResponse({
+                "status": "error",
+                "message": "Демо-видео не найдено"
+            }, status_code=404)
+        
+        print(f"🎬 Анализируем демо-видео: {video_name} ({video_path})")
+        
+        # Импортируем модули для обработки
+        from backend.real_video_analyzer import RealVideoAnalyzer
+        
+        # Создаем анализатор реального видео
+        analyzer = RealVideoAnalyzer()
+        
+        # Обрабатываем демо-видео
+        print("🎬 Начинаем анализ демо-видео...")
+        analysis_result = analyzer.analyze_video(video_path)
+        
+        # Сохраняем результаты анализа для системы оценки
+        analysis_data = {
+            'video_filename': os.path.basename(video_path),
+            'analysis_result': analysis_result,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        # Сохраняем в JSON файл для последующего использования
+        analysis_file = f"uploads/analysis_{os.path.basename(video_path)}.json"
+        with open(analysis_file, 'w', encoding='utf-8') as f:
+            json.dump(analysis_data, f, ensure_ascii=False, indent=2, default=str)
+        
+        print(f"✅ Результаты анализа демо-видео сохранены: {analysis_file}")
+        
+        return JSONResponse({
+            "status": "success",
+            "message": f"Демо-видео '{video_name}' успешно проанализировано",
+            "analysis_result": analysis_result
+        })
+        
+    except Exception as e:
+        print(f"❌ Ошибка анализа демо-видео: {e}")
+        return JSONResponse({
+            "status": "error",
+            "message": f"Ошибка анализа демо-видео: {str(e)}"
+        }, status_code=500)
+
 if __name__ == "__main__":
     print("🚀 Запускаем Aura сервер...")
     

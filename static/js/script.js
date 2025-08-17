@@ -11,6 +11,127 @@
         });
     }
     
+    // Функция для выбора демо-видео
+    function selectDemoVideo(videoPath, videoName) {
+        console.log(`🎬 Выбрано демо-видео: ${videoName} (${videoPath})`);
+        
+        // Показываем прогресс
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const uploadBtn = document.getElementById('uploadBtn');
+        
+        if (!uploadProgress || !progressFill || !progressText || !uploadBtn) {
+            console.error('❌ Не все элементы прогресса найдены');
+            return;
+        }
+        
+        // Скрываем кнопку загрузки
+        uploadBtn.style.display = 'none';
+        
+        // Показываем прогресс
+        uploadProgress.style.display = 'block';
+        progressText.textContent = `Анализируем демо-видео: ${videoName}`;
+        
+        // Запускаем анализ демо-видео
+        analyzeDemoVideo(videoPath, videoName);
+    }
+    
+    // Функция для анализа демо-видео
+    async function analyzeDemoVideo(videoPath, videoName) {
+        try {
+            console.log('🎬 Начинаем анализ демо-видео:', videoPath, videoName);
+            
+            // Имитируем прогресс для демо-видео
+            await simulateProgress();
+            
+            console.log('📡 Отправляем запрос на /analyze-demo-video');
+            
+            // Отправляем запрос на анализ
+            const response = await fetch('/analyze-demo-video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    video_path: videoPath,
+                    video_name: videoName
+                })
+            });
+            
+            console.log('📥 Получен ответ:', response.status, response.ok);
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('📊 Результат анализа:', result);
+                console.log('🔍 analysis_result:', result.analysis_result);
+                
+                // Скрываем прогресс
+                const uploadProgress = document.getElementById('uploadProgress');
+                if (uploadProgress) {
+                    uploadProgress.style.display = 'none';
+                }
+                
+                // Показываем результаты анализа демо-видео
+                if (window.displayResults) {
+                    console.log('✅ Вызываем displayResults');
+                    window.displayResults(result.analysis_result);
+                } else {
+                    console.error('❌ displayResults не найден');
+                }
+            } else {
+                throw new Error('Ошибка анализа демо-видео');
+            }
+        } catch (error) {
+            console.error('❌ Ошибка анализа демо-видео:', error);
+            const progressText = document.getElementById('progressText');
+            if (progressText) {
+                progressText.textContent = '❌ Ошибка анализа демо-видео';
+            }
+            setTimeout(() => {
+                if (window.resetUploadForm) {
+                    window.resetUploadForm();
+                }
+            }, 2000);
+        }
+    }
+    
+    // Функция для имитации прогресса
+    async function simulateProgress() {
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        if (!progressFill || !progressText) {
+            console.warn('⚠️ Элементы прогресса не найдены, пропускаем имитацию');
+            return;
+        }
+        
+        const messages = [
+            'Загружаем демо-видео...',
+            'Обрабатываем кадры...',
+            'Детектируем людей...',
+            'Строим траектории...',
+            'Генерируем аналитику...',
+            'Формируем отчёт...'
+        ];
+        
+        let currentStep = 0;
+        
+        return new Promise((resolve) => {
+            const interval = setInterval(() => {
+                if (currentStep < messages.length) {
+                    const progress = ((currentStep + 1) / messages.length) * 100;
+                    progressFill.style.width = progress + '%';
+                    progressText.textContent = messages[currentStep];
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 800);
+        });
+    }
+    
     // Функции для модального окна
     function openImageModal(imageSrc, imageAlt) {
         modalImage.src = imageSrc;
@@ -279,30 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`📊 Прогресс: ${percent}% - ${message}`);
     }
 
-    function displayResults(analytics) {
-        // Скрываем прогресс
-        uploadProgress.style.display = 'none';
-        
-        // Показываем секцию результатов
-        resultsSection.style.display = 'block';
-        
-        // Генерируем HTML с результатами
-        const resultsHTML = generateResultsHTML(analytics);
-        resultsContainer.innerHTML = resultsHTML;
-        
-        // Показываем секцию оценки траекторий
-        const ratingSection = document.getElementById('ratingSection');
-        if (ratingSection) {
-            ratingSection.style.display = 'block';
-        }
-        
-        // Прокручиваем к результатам
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
-        
-        // Обновляем кнопку
-        uploadBtn.innerHTML = '<i class="fas fa-plus"></i> Анализировать другое видео';
-        uploadBtn.disabled = false;
-    }
+
 
     function generateResultsHTML(analytics) {
         const summary = analytics.summary || {};
@@ -427,17 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-    function resetUploadForm() {
-        uploadProgress.style.display = 'none';
-        uploadBtn.disabled = false;
-        uploadBtn.innerHTML = '<i class="fas fa-magic"></i> Анализировать видео';
-        fileUploadArea.querySelector('p').innerHTML = 'Перетащите видео сюда или <span class="browse-link">выберите файл</span>';
-        videoFileInput.value = '';
-        
-        // Сбрасываем прогресс
-        progressFill.style.width = '0%';
-        progressText.textContent = 'Готов к анализу';
-    }
+
 
     function showError(message) {
         const errorDiv = document.createElement('div');
@@ -759,3 +847,155 @@ function getCurrentVideoFilename() {
     // Получаем имя файла из глобальной переменной
     return window.currentVideoFilename || 'test_video.mp4';
 }
+
+// Делаем функции доступными глобально
+window.selectDemoVideo = selectDemoVideo;
+window.analyzeDemoVideo = analyzeDemoVideo;
+window.simulateProgress = simulateProgress;
+
+// Глобальные функции для отображения результатов
+window.displayResults = function(analytics) {
+    console.log('🎯 displayResults вызван с данными:', analytics);
+    
+    // Получаем элементы DOM
+    const uploadProgress = document.getElementById('uploadProgress');
+    const resultsSection = document.getElementById('resultsSection');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const uploadBtn = document.getElementById('uploadBtn');
+    
+    if (!uploadProgress || !resultsSection || !resultsContainer || !uploadBtn) {
+        console.error('❌ Не все элементы DOM найдены');
+        return;
+    }
+    
+    // Скрываем прогресс
+    uploadProgress.style.display = 'none';
+    
+    // Показываем секцию результатов
+    resultsSection.style.display = 'block';
+    
+    // Генерируем HTML с результатами
+    const resultsHTML = window.generateResultsHTML(analytics);
+    resultsContainer.innerHTML = resultsHTML;
+    
+    // Прокручиваем к результатам
+    resultsSection.scrollIntoView({ behavior: 'smooth' });
+    
+    // Обновляем кнопку
+    uploadBtn.innerHTML = '<i class="fas fa-plus"></i> Анализировать другое видео';
+    uploadBtn.disabled = false;
+    
+    console.log('✅ Результаты отображены');
+};
+
+window.generateResultsHTML = function(analytics) {
+    console.log('🎨 generateResultsHTML вызван с данными:', analytics);
+    
+    const summary = analytics.summary || {};
+    const heatmap = analytics.heatmap || {};
+    const desirePaths = analytics.desire_paths || {};
+    const queueAnalysis = analytics.queue_analysis || {};
+    
+    console.log('📊 Данные для отображения:', { summary, heatmap, desirePaths, queueAnalysis });
+    
+    return `
+        <div class="results-grid">
+            <!-- Сводка -->
+            <div class="result-card">
+                <h4><i class="fas fa-chart-line"></i> Общая сводка</h4>
+                <div class="stats-grid">
+                    <div class="stat">
+                        <span class="stat-value">${summary.total_visitors || 0}</span>
+                        <span class="stat-label">Всего посетителей</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">${summary.max_concurrent_visitors || 0}</span>
+                        <span class="stat-label">Максимум одновременно</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">${Math.round(summary.avg_visit_duration || 0)}с</span>
+                        <span class="stat-label">Среднее время визита</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">${summary.peak_time || 'N/A'}</span>
+                        <span class="stat-label">Время пика</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Тепловая карта -->
+            <div class="result-card featured-card">
+                <h4><i class="fas fa-fire"></i> Тепловая карта популярности</h4>
+                ${heatmap.image_path ? 
+                    `<div class="image-container">
+                        <img src="${heatmap.image_path}" alt="Тепловая карта" class="result-image impressive-image" onclick="openImageModal('${heatmap.image_path}', 'Тепловая карта')">
+                        <div class="image-overlay">
+                            <span class="overlay-text">Наглядная карта активности</span>
+                        </div>
+                    </div>` :
+                    '<p class="no-data">Данные не доступны</p>'
+                }
+            </div>
+
+            <!-- Тропы желаний -->
+            <div class="result-card featured-card">
+                <h4><i class="fas fa-route"></i> Тропы желаний посетителей</h4>
+                ${desirePaths.image_path ? 
+                    `<div class="image-container">
+                        <img src="${desirePaths.image_path}" alt="Тропы желаний" class="result-image impressive-image" onclick="openImageModal('${desirePaths.image_path}', 'Тропы желаний')">
+                        <div class="image-overlay">
+                            <span class="overlay-text">Реальные маршруты движения</span>
+                        </div>
+                    </div>` :
+                    '<p class="no-data">Данные не доступны</p>'
+                }
+                <div class="path-insights">
+                    <p><strong>📊 Проанализировано маршрутов:</strong> ${desirePaths.total_paths || 0}</p>
+                    <p><strong>⏱️ Средняя длительность пути:</strong> ${Math.round(desirePaths.avg_path_duration || 0)}с</p>
+                    ${desirePaths.description ? `<p><strong>💡 Описание:</strong> ${desirePaths.description}</p>` : ''}
+                </div>
+            </div>
+
+            <!-- Анализ очередей -->
+            <div class="result-card">
+                <h4><i class="fas fa-users-line"></i> Анализ загруженности</h4>
+                ${queueAnalysis.image_path ? 
+                    `<img src="${queueAnalysis.image_path}" alt="Анализ очередей" class="result-image" onclick="openImageModal('${queueAnalysis.image_path}', 'Анализ очередей')">` :
+                    '<p class="no-data">Данные не доступны</p>'
+                }
+                <p><strong>Максимальная загруженность:</strong> ${queueAnalysis.max_concurrent || 0} человек</p>
+                <p><strong>Средняя загруженность:</strong> ${queueAnalysis.avg_concurrent || 0} человек</p>
+            </div>
+        </div>
+    `;
+};
+
+// Глобальная функция для сброса формы
+window.resetUploadForm = function() {
+    console.log('🔄 resetUploadForm вызван');
+    
+    // Получаем элементы DOM
+    const uploadProgress = document.getElementById('uploadProgress');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const videoFileInput = document.getElementById('videoFile');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    
+    if (!uploadProgress || !uploadBtn || !fileUploadArea || !videoFileInput || !progressFill || !progressText) {
+        console.error('❌ Не все элементы DOM найдены для resetUploadForm');
+        return;
+    }
+    
+    uploadProgress.style.display = 'none';
+    uploadBtn.disabled = false;
+    uploadBtn.innerHTML = '<i class="fas fa-magic"></i> Анализировать видео';
+    fileUploadArea.querySelector('p').innerHTML = 'Перетащите видео сюда или <span class="browse-link">выберите файл</span>';
+    videoFileInput.value = '';
+    
+    // Сбрасываем прогресс
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Готов к анализу';
+    
+    console.log('✅ Форма сброшена');
+};
