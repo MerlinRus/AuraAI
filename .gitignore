@@ -142,8 +142,6 @@ Thumbs.db
 *.mov
 *.db
 *.pt
-images/
-static/trajectory_gifs/
 
 # Keep only essential model files
 !yolov8n.pt

@@ -17,6 +17,9 @@ from backend.gif_generator import TrajectoryGifGenerator
 # Создаем экземпляр FastAPI
 app = FastAPI(title="Aura - AI Analytics", version="1.0.0")
 
+# Импортируем трекер прогресса
+from backend.progress_tracker import progress_tracker
+
 # Проверяем и подключаем статические файлы
 if os.path.exists("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -63,6 +66,12 @@ if os.path.exists("templates"):
 async def read_root(request: Request):
     """Главная страница"""
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/get-progress")
+async def get_progress():
+    """Получить текущий прогресс обработки"""
+    progress_data = progress_tracker.get_progress()
+    return progress_data
 
 @app.post("/upload-video/")
 async def upload_video(file: UploadFile = File(...)):

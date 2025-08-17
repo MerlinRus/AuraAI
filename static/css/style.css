@@ -23,7 +23,7 @@ body {
 .header {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    padding: 50px 40px;
+    padding: 80px 40px;
     margin-bottom: 40px;
     border-radius: 0 0 20px 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -31,8 +31,7 @@ body {
     justify-content: space-between;
     align-items: center;
     position: relative;
-    max-width: 1200px;
-    margin: 0 auto 40px auto;
+    margin: 0 0 40px 0;
 }
 
 .logo-container {
@@ -89,6 +88,14 @@ body {
     color: #764ba2;
     letter-spacing: -1px;
     margin: 0;
+}
+
+.gradient-title {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
 }
 
 .tagline {
@@ -191,7 +198,7 @@ body {
 
 /* Десктопные отступы */
 .main-content {
-    padding: 0 40px;
+    padding: 0;
 }
 
 .content-card {
@@ -200,8 +207,7 @@ body {
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-    max-width: 1200px;
+    margin: 0;
 }
 
 @media (max-width: 768px) {
@@ -508,6 +514,36 @@ body {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+}
+
+/* Информационный текст под кнопкой */
+.upload-info {
+    margin-top: 20px;
+    text-align: center;
+    padding: 20px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.upload-info p {
+    margin: 8px 0;
+    color: #666;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.upload-info i {
+    color: #764ba2;
+    font-size: 1.1em;
+}
+
+.upload-info strong {
+    color: #333;
+    font-weight: 600;
 }
 
 /* Результаты */

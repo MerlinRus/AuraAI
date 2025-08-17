@@ -96,7 +96,7 @@
         }
     }
     
-    // Функция для имитации прогресса
+    // Функция для имитации прогресса с возможностью отображения реального процента
     async function simulateProgress() {
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
@@ -116,16 +116,55 @@
         ];
         
         let currentStep = 0;
+        let realProgress = 0;
+        
+        // Функция для обновления прогресса с реальным процентом
+        const updateProgressWithReal = (realPercent) => {
+            if (realPercent > 0) {
+                realProgress = realPercent;
+                const message = messages[currentStep] || messages[messages.length - 1];
+                progressText.textContent = `${message} (${realPercent.toFixed(1)}%)`;
+                progressFill.style.width = realPercent + '%';
+            }
+        };
+        
+        // Делаем функцию доступной глобально для обновления с бэкенда
+        window.updateProgressWithReal = updateProgressWithReal;
+        
+        // Запускаем периодический запрос прогресса с бэкенда
+        const progressInterval = setInterval(async () => {
+            try {
+                const response = await fetch('/get-progress');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.progress && data.progress > 0) {
+                        updateProgressWithReal(data.progress);
+                    }
+                }
+            } catch (error) {
+                console.log('📊 Запрос прогресса:', error.message);
+            }
+        }, 1000); // Запрашиваем каждую секунду
         
         return new Promise((resolve) => {
             const interval = setInterval(() => {
                 if (currentStep < messages.length) {
                     const progress = ((currentStep + 1) / messages.length) * 100;
-                    progressFill.style.width = progress + '%';
-                    progressText.textContent = messages[currentStep];
+                    const message = messages[currentStep];
+                    
+                    // Если есть реальный прогресс, используем его
+                    if (realProgress > 0) {
+                        progressText.textContent = `${message} (${realProgress.toFixed(1)}%)`;
+                        progressFill.style.width = realProgress + '%';
+                    } else {
+                        progressText.textContent = message;
+                        progressFill.style.width = progress + '%';
+                    }
+                    
                     currentStep++;
                 } else {
                     clearInterval(interval);
+                    clearInterval(progressInterval); // Очищаем интервал прогресса
                     resolve();
                 }
             }, 800);

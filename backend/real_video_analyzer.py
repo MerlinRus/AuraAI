@@ -13,6 +13,7 @@ import uuid
 from backend.trajectory_smoother import TrajectorySmoother
 from backend.advanced_tracker import AdvancedPersonTracker
 from backend.dwell_time_analyzer import DwellTimeAnalyzer
+from backend.progress_tracker import progress_tracker
 
 class RealVideoAnalyzer:
     def __init__(self):
@@ -77,6 +78,8 @@ class RealVideoAnalyzer:
         analysis_id = str(uuid.uuid4())[:8]
         
         # Обрабатываем видео
+        progress_tracker.reset()
+        progress_tracker.update_progress(5, "Начало анализа")
         print("🔍 Начинаем детекцию людей...")
         
         while True:
@@ -153,7 +156,7 @@ class RealVideoAnalyzer:
             # Прогресс
             if frame_count % 30 == 0:
                 progress = (frame_count / total_frames) * 100
-                print(f"⏳ Прогресс: {progress:.1f}%")
+                progress_tracker.update_progress(progress, "Обработка кадров")
         
         cap.release()
         
@@ -168,18 +171,21 @@ class RealVideoAnalyzer:
         print(f"✅ Обработка завершена. Найдено {len(filtered_trajectories)} траекторий")
         
         # Создаем визуализации
+        progress_tracker.update_progress(85, "Создание визуализаций")
         visualizations = self._create_visualizations(
             filtered_trajectories, people_per_frame, 
             width, height, analysis_id, video_path, fps
         )
         
         # Генерируем аналитику
+        progress_tracker.update_progress(95, "Генерация аналитики")
         analytics = self._generate_analytics(
             filtered_trajectories, people_per_frame, 
             duration, visualizations
         )
         
         # Конвертируем NumPy типы в Python типы для JSON сериализации
+        progress_tracker.update_progress(100, "Завершение анализа")
         analytics = self._convert_numpy_types(analytics)
         
         return analytics
